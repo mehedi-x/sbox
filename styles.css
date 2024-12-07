@@ -11,6 +11,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: all 0.3s ease-in-out;
 }
 
 h1, h2 {
@@ -24,22 +25,34 @@ h1, h2 {
   align-items: center;
   background-color: #007bff;
   color: white;
-  padding: 15px 30px;
+  padding: 20px 30px;
+  transition: background-color 0.3s ease;
+}
+
+.header:hover {
+  background-color: #0056b3;
 }
 
 .header .logo h1 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.header .logo h1:hover {
+  transform: scale(1.1);
 }
 
 .nav a {
   color: white;
   text-decoration: none;
   margin-left: 20px;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
 }
 
 .nav a:hover {
+  color: #ffcc00;
   text-decoration: underline;
 }
 
@@ -50,16 +63,24 @@ h1, h2 {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  background-color: #e9ecef;
 }
 
 #auth-section {
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
   width: 100%;
   max-width: 400px;
   text-align: center;
+  transform: translateY(-50px);
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  0% { transform: translateY(-50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 form input, form button {
@@ -67,7 +88,8 @@ form input, form button {
   padding: 15px;
   margin: 10px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 form input:focus, form button:focus {
@@ -79,6 +101,7 @@ form button {
   background-color: #007bff;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
@@ -92,17 +115,24 @@ form p {
 form a {
   color: #007bff;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 form a:hover {
-  text-decoration: underline;
+  color: #0056b3;
 }
 
 /* Footer */
 .footer {
   background-color: #333;
   color: white;
-  padding: 20px;
+  padding: 30px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.footer:hover {
+  background-color: #444;
 }
 
 .footer-content {
@@ -113,20 +143,21 @@ form a:hover {
 }
 
 .footer p {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .social-icons {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .social-icon {
   color: white;
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 10px 15px;
   background-color: #555;
   border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
 .social-icon:hover {
@@ -136,17 +167,17 @@ form a:hover {
 /* Media Queries */
 @media screen and (max-width: 768px) {
   .header .logo h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .nav a {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-left: 15px;
   }
 
   #auth-section {
     width: 80%;
-    padding: 25px;
+    padding: 30px;
   }
 
   form input, form button {
@@ -158,6 +189,7 @@ form a:hover {
   .header {
     flex-direction: column;
     text-align: center;
+    padding: 15px;
   }
 
   .nav {
@@ -170,6 +202,14 @@ form a:hover {
   }
 
   .footer p {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+  }
+
+  .footer .social-icons {
+    margin-top: 10px;
+  }
+
+  form input, form button {
+    font-size: 1rem;
   }
 }
