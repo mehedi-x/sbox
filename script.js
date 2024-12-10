@@ -1,14 +1,11 @@
-document.getElementById('auth-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  console.log('Login attempt:', { email, password });
-
-  // TODO: Add backend API integration here
+document.getElementById('download-btn').addEventListener('click', function() {
+    const link = document.createElement('a');
+    link.href = 'your-video.mp4'; // Replace with your video file link
+    link.download = 'video.mp4'; // Replace with the desired file name
+    link.click();
 });
 
-document.getElementById('switch-to-signup').addEventListener('click', function () {
-  alert('Sign-Up feature coming soon!');
+document.getElementById('description-btn').addEventListener('click', function() {
+    const description = document.getElementById('description');
+    description.classList.toggle('hidden');
 });
