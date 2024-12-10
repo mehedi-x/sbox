@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Platform</title>
+    <title>Hacker Video Platform</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,17 +11,37 @@
         <h1>Hacker Video Platform</h1>
     </header>
     <main>
+        <!-- প্রথম ভিডিও -->
         <div class="video-container">
             <video controls>
-                <source src="your-video.mp4" type="video/mp4">
+                <source src="video1.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="button-container">
-                <button id="download-btn">Download</button>
-                <button id="description-btn">Description</button>
+                <button onclick="downloadVideo('video1.mp4')">Download</button>
+                <button onclick="toggleDescription('desc1')">Description</button>
             </div>
-            <div id="description" class="hidden">
-                <p>This is the description of the video. Add your details here.</p>
+            <div id="desc1" class="hidden">
+                <p>This is the description of the first video.</p>
+            </div>
+        </div>
+        
+        <!-- ইউটিউব ভিডিও -->
+        <div class="video-container">
+            <iframe 
+                width="100%" 
+                height="450" 
+                src="https://www.youtube.com/embed/eRE5t6YQ5TM" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+            <div class="button-container">
+                <button onclick="toggleDescription('desc2')">Description</button>
+            </div>
+            <div id="desc2" class="hidden">
+                <p>This is the description of the embedded YouTube video.</p>
             </div>
         </div>
     </main>
