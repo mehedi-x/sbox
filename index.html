@@ -3,224 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto WhatsApp - Full Version</title>
-  <style>
-    body {
-      background: #121212;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .header {
-      background: #000;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #333;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-    .icons span {
-      margin-left: 15px;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-    }
-    .settings-popup {
-      background: #1a1a1a;
-      padding: 15px;
-      border-radius: 5px;
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      width: 250px;
-      z-index: 999;
-      border: 1px solid #333;
-      color: #fff;
-    }
-    .settings-popup label {
-      display: block;
-      margin: 10px 0;
-      font-size: 14px;
-    }
-    .hidden {
-      display: none;
-    }
-    .status-panel {
-      background: #333;
-      color: #fff;
-      padding: 10px;
-      margin-top: 20px;
-    }
-    .status-panel h4 {
-      margin: 0;
-      font-size: 16px;
-    }
-    .status-panel ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    #qrCodeContainer {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .input-container {
-      margin-top: 20px;
-    }
-    .input-container input, .input-container textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 16px;
-      border: 1px solid #444;
-      background: #222;
-      color: #fff;
-      border-radius: 5px;
-    }
-    .upload-btn {
-      padding: 10px;
-      background: #28a745;
-      border: none;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .upload-btn:hover {
-      background: #218838;
-    }
-    .status-btn {
-      padding: 10px 20px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+  <title>Auto WhatsApp</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="header">
-    <h1>Auto WhatsApp</h1>
-    <div class="icons">
-      <span title="Settings" onclick="toggleSettings()">&#9881;</span>
+  <div class="container">
+    <div class="header">
+      <h1>Auto WhatsApp Sender</h1>
+      <button class="whatsapp-login-btn" onclick="loginToWhatsApp()">Login with WhatsApp</button>
+    </div>
+    
+    <div class="message-box">
+      <h3>Custom Message</h3>
+      <textarea id="messageInput" placeholder="Enter your message here..."></textarea>
+      <button class="send-message-btn" onclick="sendMessage()">Send Message</button>
+    </div>
+    
+    <div class="upload-section">
+      <input type="file" id="fileUpload" accept=".csv, .xlsx" onchange="uploadFile()">
+      <button onclick="downloadNumbers()">Download Numbers</button>
+    </div>
+    
+    <div class="status-panel">
+      <h3>Live Status</h3>
+      <div id="statusOutput">No data available</div>
+    </div>
+    
+    <div id="whatsappWeb" class="whatsapp-web">
+      <h3>WhatsApp Web</h3>
+      <div id="qrCodeContainer"></div>
     </div>
   </div>
-
-  <!-- WhatsApp Web Iframe -->
-  <iframe src="https://web.whatsapp.com" id="waIframe"></iframe>
-
-  <!-- Settings Panel -->
-  <div class="settings-popup hidden" id="settingsPanel">
-    <h3>Settings</h3>
-    <label>Delay (seconds): <input type="number" id="delay" value="20"></label>
-    <label>Retry Limit: <input type="number" id="retry" value="3"></label>
-    <label><input type="checkbox" id="previewToggle" checked> Enable Message Preview</label>
-    <label><input type="checkbox" id="autocloseToggle" checked> Auto-close tab after send</label>
-    <button onclick="saveSettings()">Save</button>
-  </div>
-
-  <!-- Upload Excel File Section -->
-  <div class="input-container">
-    <label for="fileUpload">Upload Excel File:</label>
-    <input type="file" id="fileUpload" accept=".xlsx, .xls" onchange="handleFileUpload()">
-  </div>
-
-  <!-- Custom Message Section -->
-  <div class="input-container">
-    <label for="messageInput">Enter Custom Message:</label>
-    <textarea id="messageInput" rows="4" placeholder="Enter your message here..."></textarea>
-  </div>
-
-  <!-- QR Code for WhatsApp Web Login -->
-  <div id="qrCodeContainer">
-    <h3>Scan to Log in</h3>
-    <img id="whatsappQR" src="https://web.whatsapp.com/qr" alt="QR Code">
-  </div>
-
-  <!-- Start/Stop Button -->
-  <div>
-    <button class="status-btn" onclick="startSendingMessages()">Start Sending</button>
-    <button class="status-btn" onclick="stopSendingMessages()">Stop</button>
-  </div>
-
-  <!-- Live Status Display -->
-  <div class="status-panel" id="statusPanel">
-    <h4>Status</h4>
-    <ul id="statusList">
-      <!-- Status updates will be shown here -->
-    </ul>
-  </div>
-
-  <script>
-    let delay = 20000;
-    let retryLimit = 3;
-    let autoCloseTab = true;
-    let sendingMessages = false;
-    let messageQueue = [];
-    
-    function toggleSettings() {
-      document.getElementById("settingsPanel").classList.toggle("hidden");
-    }
-
-    function saveSettings() {
-      delay = parseInt(document.getElementById("delay").value) * 1000;
-      retryLimit = parseInt(document.getElementById("retry").value);
-      autoCloseTab = document.getElementById("autocloseToggle").checked;
-      localStorage.setItem("whatsappSettings", JSON.stringify({ delay, retryLimit, autoCloseTab }));
-      document.getElementById("settingsPanel").classList.add("hidden");
-      alert("Settings saved!");
-    }
-
-    function handleFileUpload() {
-      const file = document.getElementById("fileUpload").files[0];
-      alert("File uploaded: " + file.name);
-      // Process file and extract phone numbers here
-    }
-
-    function startSendingMessages() {
-      sendingMessages = true;
-      document.getElementById("statusList").innerHTML = '<li>Sending messages...</li>';
-      // Logic for sending messages here
-      sendMessageToPhoneNumbers();
-    }
-
-    function stopSendingMessages() {
-      sendingMessages = false;
-      document.getElementById("statusList").innerHTML = '<li>Sending stopped.</li>';
-      // Logic to stop sending messages
-    }
-
-    function sendMessageToPhoneNumbers() {
-      if (sendingMessages) {
-        // Use setInterval or recursive setTimeout for delay-based sending
-        setTimeout(() => {
-          // Send message logic here using WhatsApp Web
-          console.log('Message sent!');
-          document.getElementById("statusList").innerHTML += '<li>Message sent to: Phone Number</li>';
-          if (autoCloseTab) {
-            window.close(); // Close current tab after sending message
-          }
-        }, delay);
-      }
-    }
-
-    // Handle QR code loading and WhatsApp Web login
-    function loadWhatsAppQRCode() {
-      let qrCodeImage = document.getElementById("whatsappQR");
-      qrCodeImage.src = 'https://web.whatsapp.com/qr';
-      qrCodeImage.onload = () => {
-        console.log("QR Code Loaded");
-      };
-    }
-
-    loadWhatsAppQRCode();
-  </script>
+  
+  <script src="script.js"></script>
 </body>
 </html>
