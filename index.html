@@ -48,6 +48,10 @@
     textarea {
       height: 150px;
     }
+    .file-upload {
+      margin-top: 20px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -66,6 +70,12 @@
     <br />
     <!-- Button to send message -->
     <button onclick="sendMessage()">Send Message</button>
+  </div>
+
+  <!-- File Upload Section -->
+  <div class="file-upload">
+    <input type="file" id="fileInput" accept=".csv, .xlsx" />
+    <button onclick="uploadFile()">Upload Numbers from File</button>
   </div>
 
   <script>
@@ -89,6 +99,38 @@
       
       // Open WhatsApp link in a new tab
       window.open(url, "_blank");
+    }
+
+    // Function to upload CSV/Excel and send message
+    function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      
+      if (!file) {
+        alert("Please upload a file first!");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileContent = e.target.result;
+        const rows = fileContent.split('\n');
+        
+        // Loop through each row and send message
+        rows.forEach(row => {
+          const columns = row.split(',');
+          const phoneNumber = columns[0].trim();
+          const message = columns[1].trim();
+
+          if (phoneNumber && message) {
+            // Send the message using the WhatsApp API link
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+          }
+        });
+      };
+      
+      reader.readAsText(file);
     }
   </script>
 </body>
