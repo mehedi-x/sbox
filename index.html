@@ -3,37 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Auto WhatsApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
   <div class="header">
     <h1>Auto WhatsApp</h1>
     <div class="icons">
-      <button>⚙️</button>
-      <button>❓</button>
-      <button>👤</button>
+      <span title="Settings">⚙️</span>
+      <span title="Help">❓</span>
+      <span title="Profile">👤</span>
     </div>
   </div>
 
-  <div class="main">
-    <div class="controls">
-      <label>Custom Message:</label>
-      <textarea id="message"></textarea>
-      <input type="file" id="excelFile" accept=".xls,.xlsx" />
-      <input type="text" id="numberInput" placeholder="Type number & press Enter" />
+  <div class="popup">
+    <h2>Launch WhatsApp Web</h2>
+    <iframe id="whatsappFrame" src="https://web.whatsapp.com" frameborder="0"></iframe>
+  </div>
+
+  <div class="controls">
+    <textarea id="message" placeholder="Type your message here... (use *bold*, _italic_, or newline \n)"></textarea>
+
+    <input type="file" id="excelFile" accept=".xlsx" onchange="handleExcel(this)">
+    <input type="text" id="numberInput" placeholder="Enter number and press Enter" onkeydown="handleNumberInput(event)">
+    <div id="numberList" class="hidden"></div>
+
+    <div class="tools">
       <button onclick="startAuto()">Start</button>
       <button onclick="stopAuto()">Stop</button>
-    </div>
-
-    <div class="whatsapp-popup" id="waPopup">
-      <iframe src="https://web.whatsapp.com" id="waFrame"></iframe>
-    </div>
-
-    <div class="status">
-      <h3>Status:</h3>
-      <div id="statusLogs">Waiting...</div>
+      <button onclick="downloadNumbers()">Download Numbers</button>
     </div>
   </div>
+
+  <div id="statusLogs" class="logs"></div>
 
   <script src="script.js"></script>
 </body>
