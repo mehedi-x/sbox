@@ -53,6 +53,20 @@
     .hidden {
       display: none;
     }
+    .status-panel {
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    .status-panel h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .status-panel ul {
+      list-style-type: none;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
@@ -76,10 +90,37 @@
     <button onclick="saveSettings()">Save</button>
   </div>
 
+  <!-- Upload Excel File Section -->
+  <div>
+    <label for="fileUpload">Upload Excel File:</label>
+    <input type="file" id="fileUpload" accept=".xlsx, .xls" onchange="handleFileUpload()">
+  </div>
+
+  <!-- Custom Message Section -->
+  <div>
+    <label for="messageInput">Enter Custom Message:</label>
+    <textarea id="messageInput" rows="4" cols="50"></textarea>
+  </div>
+
+  <!-- Live Status Display -->
+  <div class="status-panel" id="statusPanel">
+    <h4>Status</h4>
+    <ul id="statusList">
+      <!-- Status updates will be shown here -->
+    </ul>
+  </div>
+
+  <!-- Start/Stop Button -->
+  <div>
+    <button onclick="startSendingMessages()">Start Sending</button>
+    <button onclick="stopSendingMessages()">Stop</button>
+  </div>
+
   <script>
     let delay = 20000;
     let retryLimit = 3;
     let autoCloseTab = true;
+    let sendingMessages = false;
 
     document.querySelector(".icons span[title='Settings']").onclick = () => {
       document.getElementById("settingsPanel").classList.toggle("hidden");
@@ -92,6 +133,24 @@
       localStorage.setItem("whatsappSettings", JSON.stringify({ delay, retryLimit, autoCloseTab }));
       document.getElementById("settingsPanel").classList.add("hidden");
       alert("Settings saved!");
+    }
+
+    function handleFileUpload() {
+      const file = document.getElementById("fileUpload").files[0];
+      // Handle file upload and extract phone numbers
+      alert("File uploaded: " + file.name);
+    }
+
+    function startSendingMessages() {
+      sendingMessages = true;
+      document.getElementById("statusList").innerHTML = '<li>Sending messages...</li>';
+      // Logic for sending messages will go here
+    }
+
+    function stopSendingMessages() {
+      sendingMessages = false;
+      document.getElementById("statusList").innerHTML = '<li>Sending stopped.</li>';
+      // Logic to stop sending messages will go here
     }
 
     window.onload = () => {
