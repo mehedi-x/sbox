@@ -52,6 +52,11 @@
       margin-top: 20px;
       text-align: center;
     }
+    .status {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -65,11 +70,13 @@
     <br />
     <br />
     <!-- Input for phone number and message -->
-    <input type="text" id="phoneNumber" placeholder="Enter phone number (with country code)" />
+    <textarea id="phoneNumber" placeholder="Enter phone numbers (comma separated)"></textarea>
     <textarea id="message" placeholder="Type your message here..."></textarea>
     <br />
     <!-- Button to send message -->
     <button onclick="sendMessage()">Send Message</button>
+    <br />
+    <div class="status" id="status"></div>
   </div>
 
   <!-- File Upload Section -->
@@ -78,30 +85,43 @@
     <button onclick="uploadFile()">Upload Numbers from File</button>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <script>
     // Function to launch WhatsApp Web
     function launchWhatsAppWeb() {
       window.open("https://web.whatsapp.com", "_blank");
     }
 
-    // Function to send message
+    // Function to send messages to multiple numbers
     function sendMessage() {
-      const phoneNumber = document.getElementById("phoneNumber").value;
+      const phoneNumbers = document.getElementById("phoneNumber").value.split(',');
       const message = document.getElementById("message").value;
+      let count = 0;
       
-      if (!phoneNumber || !message) {
-        alert("Please provide both phone number and message!");
+      if (!phoneNumbers || !message) {
+        alert("Please provide both phone numbers and message!");
         return;
       }
 
-      // Construct the WhatsApp link
-      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      
-      // Open WhatsApp link in a new tab
-      window.open(url, "_blank");
+      document.getElementById("status").innerText = "Sending messages...";
+      phoneNumbers.forEach((phoneNumber, index) => {
+        const cleanPhone = phoneNumber.trim();
+        if (validatePhoneNumber(cleanPhone)) {
+          const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+          setTimeout(() => {
+            window.open(url, "_blank");
+            count++;
+            if (count === phoneNumbers.length) {
+              document.getElementById("status").innerText = "Messages sent successfully!";
+            }
+          }, index * 2000); // Send messages with a delay (2 seconds between each)
+        } else {
+          alert(`Invalid phone number: ${cleanPhone}`);
+        }
+      });
     }
 
-    // Function to upload CSV/Excel and send message
+    // Function to upload CSV/Excel and send messages
     function uploadFile() {
       const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
@@ -115,22 +135,35 @@
       reader.onload = function(e) {
         const fileContent = e.target.result;
         const rows = fileContent.split('\n');
-        
-        // Loop through each row and send message
+        let count = 0;
+
         rows.forEach(row => {
           const columns = row.split(',');
           const phoneNumber = columns[0].trim();
-          const message = columns[1].trim();
+          const message = columns[1] ? columns[1].trim() : "";
 
-          if (phoneNumber && message) {
-            // Send the message using the WhatsApp API link
+          if (phoneNumber && message && validatePhoneNumber(phoneNumber)) {
             const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(url, "_blank");
+            setTimeout(() => {
+              window.open(url, "_blank");
+              count++;
+              if (count === rows.length) {
+                document.getElementById("status").innerText = "Messages sent successfully!";
+              }
+            }, count * 2000); // Delay between sending messages
+          } else {
+            alert(`Invalid entry in file: ${row}`);
           }
         });
       };
-      
+
       reader.readAsText(file);
+    }
+
+    // Function to validate phone number
+    function validatePhoneNumber(phoneNumber) {
+      const regex = /^[0-9]{10,15}$/;  // Only numeric values with 10 to 15 digits
+      return regex.test(phoneNumber);
     }
   </script>
 </body>
