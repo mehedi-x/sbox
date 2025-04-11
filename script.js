@@ -1,98 +1,65 @@
-let autoMode = false;
-let interval;
-let numberCache = [];
+let numbersArray = [];
+let message = '';
 
-function startAuto() {
-  autoMode = true;
-  const msg = document.getElementById("message").value;
-  if (numberCache.length === 0) return alert("No numbers!");
-
-  let i = 0;
-  interval = setInterval(() => {
-    if (!autoMode || i >= numberCache.length) {
-      stopAuto();
-      return;
-    }
-    simulateMessageSend(numberCache[i], msg);
-    i++;
-  }, 20000); // Delay 20s per message
-}
-
-function stopAuto() {
-  autoMode = false;
-  clearInterval(interval);
-  log("Stopped sending.");
-}
-
-function simulateMessageSend(number, message) {
-  const frame = document.createElement("iframe");
-  frame.src = `https://web.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(message)}`;
-  frame.style.width = "1px";
-  frame.style.height = "1px";
-  frame.style.opacity = 0;
-  document.body.appendChild(frame);
-
+// Function to log in to WhatsApp Web and show QR code
+function loginToWhatsApp() {
+  const qrCodeContainer = document.getElementById("qrCodeContainer");
+  qrCodeContainer.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/WhatsApp_logo_2023.svg" alt="QR Code" style="width: 150px;">';
+  document.getElementById('whatsappWeb').style.display = 'block';
   setTimeout(() => {
-    document.body.removeChild(frame);
-    log(`Message sent to ${number}`);
-  }, 6000);
+    qrCodeContainer.innerHTML = '<img src="https://www.whatsapp.com/qr" alt="QR Code" style="width: 100%;">';
+  }, 2000);
 }
 
-function handleNumberInput(e) {
-  if (e.key === "Enter") {
-    const input = document.getElementById("numberInput");
-    const number = input.value.trim();
-    if (number && !numberCache.includes(number)) {
-      numberCache.push(number);
-      updateNumberList();
-    }
-    input.value = "";
+// Function to handle custom message input
+function sendMessage() {
+  message = document.getElementById('messageInput').value;
+  if (!message) {
+    alert('Please enter a message');
+    return;
+  }
+  
+  // Simulate sending message to all numbers
+  numbersArray.forEach((number, index) => {
+    setTimeout(() => {
+      console.log(`Sending message to: ${number}`);
+      document.getElementById('statusOutput').innerText = `Message sent to ${number}`;
+    }, index * 5000); // Send messages with a 5-second delay between each
+  });
+}
+
+// Function to handle file upload (CSV or Excel)
+function uploadFile() {
+  const file = document.getElementById('fileUpload').files[0];
+  if (file) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      const fileContent = e.target.result;
+      parseFileContent(fileContent);
+    };
+    reader.readAsText(file);
   }
 }
 
-function updateNumberList() {
-  const list = document.getElementById("numberList");
-  list.innerHTML = "";
-  numberCache.forEach(num => {
-    const span = document.createElement("span");
-    span.textContent = num;
-    list.appendChild(span);
+// Function to parse CSV content
+function parseFileContent(content) {
+  const rows = content.split('\n');
+  rows.forEach(row => {
+    const number = row.trim();
+    if (number) {
+      numbersArray.push(number);
+    }
   });
-  list.classList.remove("hidden");
+  alert('File uploaded successfully');
 }
 
-function handleExcel(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-
-  reader.onload = function(e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const numbers = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    numbers.forEach(row => {
-      const number = row[0];
-      if (number && !numberCache.includes(number)) {
-        numberCache.push(number.toString());
-      }
-    });
-
-    updateNumberList();
-  };
-  reader.readAsArrayBuffer(file);
-}
-
+// Function to download numbers as CSV
 function downloadNumbers() {
-  if (numberCache.length === 0) return alert("No numbers.");
-  const ws = XLSX.utils.aoa_to_sheet(numberCache.map(n => [n]));
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Numbers");
-  XLSX.writeFile(wb, "numbers.xlsx");
-}
-
-function log(msg) {
-  const logs = document.getElementById("statusLogs");
-  logs.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${msg}</div>`;
+  const csvContent = "data:text/csv;charset=utf-8," + numbersArray.join('\n');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "whatsapp_numbers.csv");
+  document.body.appendChild(link);
+  link.click();
 }
