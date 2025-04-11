@@ -48,6 +48,19 @@
       width: 200px;
       margin-bottom: 10px;
     }
+    .launch-btn {
+      margin-top: 15px;
+      background-color: #25D366;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+    .launch-btn:hover {
+      background-color: #128C7E;
+    }
     .panel {
       display: none;
       flex-direction: column;
@@ -71,13 +84,13 @@
       height: 80px;
       resize: none;
     }
-    button {
+    button.send {
       background-color: #25D366;
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
+    button.send:hover {
       background-color: #128C7E;
     }
   </style>
@@ -92,14 +105,15 @@
   <div class="container">
     <div class="qr-box">
       <img src="https://i.imgur.com/H7QvGfC.png" alt="QR Code" />
-      <p>Scan this QR to connect your WhatsApp</p>
+      <p>Scan the QR using your phone to login to WhatsApp Web</p>
+      <button class="launch-btn" onclick="window.open('https://web.whatsapp.com', '_blank')">Launch WhatsApp Web</button>
     </div>
 
     <div id="menuPanel" class="panel">
       <input type="file" id="excelFile" accept=".xlsx, .csv" />
       <textarea id="manualNumbers" placeholder="Enter numbers manually (one per line)"></textarea>
       <textarea id="customMessage" placeholder="Type your custom message here..."></textarea>
-      <button onclick="sendMessages()">Send WhatsApp Messages</button>
+      <button class="send" onclick="sendMessages()">Send WhatsApp Messages</button>
     </div>
   </div>
 
@@ -152,7 +166,7 @@
         setTimeout(() => {
           const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
           window.open(url, '_blank');
-        }, index * 2000); // 2s delay
+        }, index * 2000); // 2s delay between each message
       });
     }
   </script>
