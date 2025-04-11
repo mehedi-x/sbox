@@ -11,126 +11,144 @@
       font-family: 'Segoe UI', sans-serif;
       background-color: #0b141a;
       color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
-    header {
+    .sidebar {
+      width: 260px;
       background-color: #202c33;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 15px;
+      flex-direction: column;
+      padding: 20px;
     }
-    header h1 {
-      font-size: 18px;
+    .sidebar h2 {
       display: flex;
       align-items: center;
       gap: 10px;
+      font-size: 18px;
+      margin: 0;
     }
-    header h1 img {
+    .sidebar img {
       width: 30px;
     }
-    .menu-icon {
-      font-size: 24px;
-      cursor: pointer;
+    .sidebar .section {
+      margin-top: 30px;
     }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 40px;
-    }
-    .qr-box {
-      background-color: #111;
-      padding: 30px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .qr-box img {
-      width: 200px;
+    .sidebar .section button {
+      width: 100%;
+      padding: 12px;
       margin-bottom: 10px;
-    }
-    .launch-btn {
-      margin-top: 15px;
-      background-color: #25D366;
-      padding: 10px 20px;
+      background-color: #111;
+      color: #25D366;
       border: none;
       border-radius: 5px;
       font-weight: bold;
-      color: white;
       cursor: pointer;
     }
-    .launch-btn:hover {
-      background-color: #128C7E;
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
     }
-    .panel {
-      display: none;
-      flex-direction: column;
-      align-items: center;
+    .card {
       background-color: #1e2a30;
       padding: 20px;
-      margin-top: 20px;
-      width: 90%;
-      max-width: 600px;
-      border-radius: 8px;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
-    textarea, input[type="file"], button {
+    .card h3 {
+      margin-top: 0;
+      color: #25D366;
+    }
+    textarea, input[type="file"] {
+      width: 100%;
       margin: 10px 0;
       padding: 10px;
-      width: 100%;
+      font-size: 16px;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
-    }
-    textarea {
-      height: 80px;
-      resize: none;
+      background-color: #111;
+      color: white;
     }
     button.send {
       background-color: #25D366;
-      color: white;
+      padding: 12px;
+      width: 100%;
+      border: none;
       font-weight: bold;
+      color: white;
+      border-radius: 5px;
       cursor: pointer;
     }
     button.send:hover {
       background-color: #128C7E;
     }
+    .counter {
+      font-size: 14px;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> Auto WhatsApp</h1>
-    <div class="menu-icon" onclick="toggleMenu()">&#x22EE;</div>
-  </header>
+  <div class="sidebar">
+    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> Auto WhatsApp</h2>
+    
+    <div class="section">
+      <button onclick="launchWeb()">Launch WhatsApp Web</button>
+      <button onclick="document.getElementById('excelFile').click()">Upload Excel</button>
+      <button onclick="scrollToPanel('manualInput')">Manual Number Input</button>
+      <button onclick="scrollToPanel('customMessage')">Write Custom Message</button>
+      <button onclick="sendMessages()">Send Messages</button>
+    </div>
+  </div>
 
-  <div class="container">
-    <div class="qr-box">
-      <img src="https://i.imgur.com/H7QvGfC.png" alt="QR Code" />
-      <p>Scan the QR using your phone to login to WhatsApp Web</p>
-      <button class="launch-btn" onclick="window.open('https://web.whatsapp.com', '_blank')">Launch WhatsApp Web</button>
+  <div class="main">
+    <div class="card">
+      <h3>Upload Excel File</h3>
+      <input type="file" id="excelFile" accept=".xlsx, .csv" />
     </div>
 
-    <div id="menuPanel" class="panel">
-      <input type="file" id="excelFile" accept=".xlsx, .csv" />
-      <textarea id="manualNumbers" placeholder="Enter numbers manually (one per line)"></textarea>
-      <textarea id="customMessage" placeholder="Type your custom message here..."></textarea>
+    <div class="card" id="manualInput">
+      <h3>Enter Numbers Manually</h3>
+      <textarea id="manualNumbers" placeholder="One number per line..."></textarea>
+    </div>
+
+    <div class="card" id="customMessage">
+      <h3>Custom Message</h3>
+      <textarea id="customMessageInput" placeholder="Write your message here..."></textarea>
+    </div>
+
+    <div class="card">
+      <h3>Status</h3>
+      <div class="counter" id="statusCounter">No numbers yet.</div>
+    </div>
+
+    <div class="card">
       <button class="send" onclick="sendMessages()">Send WhatsApp Messages</button>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    function toggleMenu() {
-      const panel = document.getElementById('menuPanel');
-      panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    function launchWeb() {
+      window.open("https://web.whatsapp.com", "_blank");
+    }
+
+    function scrollToPanel(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
     function sendMessages() {
       const manualInput = document.getElementById('manualNumbers').value.trim();
       const fileInput = document.getElementById('excelFile');
-      const message = document.getElementById('customMessage').value.trim();
+      const message = document.getElementById('customMessageInput').value.trim();
+      const status = document.getElementById('statusCounter');
 
       if (!message) {
-        alert("Please enter a custom message.");
+        alert("Please enter a message.");
         return;
       }
 
@@ -148,28 +166,30 @@
           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
           const fileNumbers = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }).flat();
           numbers = numbers.concat(fileNumbers.map(n => n.toString().trim()));
-          openWhatsAppTabs(numbers, message);
+          processNumbers(numbers, message, status);
         };
         reader.readAsArrayBuffer(fileInput.files[0]);
       } else {
-        openWhatsAppTabs(numbers, message);
+        processNumbers(numbers, message, status);
       }
     }
 
-    function openWhatsAppTabs(numbers, message) {
+    function processNumbers(numbers, message, statusEl) {
+      numbers = [...new Set(numbers)].filter(n => n.length > 5);
       if (numbers.length === 0) {
-        alert("Please enter or upload at least one number.");
+        alert("No valid numbers found.");
         return;
       }
 
-      numbers.forEach((num, index) => {
+      statusEl.textContent = `Sending to ${numbers.length} numbers...`;
+
+      numbers.forEach((num, i) => {
         setTimeout(() => {
           const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
           window.open(url, '_blank');
-        }, index * 2000); // 2s delay between each message
+        }, i * 2500); // delay 2.5 sec per number
       });
     }
   </script>
-
 </body>
 </html>
