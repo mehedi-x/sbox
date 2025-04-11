@@ -48,14 +48,14 @@
     textarea {
       height: 150px;
     }
-    .file-upload {
-      margin-top: 20px;
-      text-align: center;
-    }
     .status {
       margin-top: 20px;
       color: green;
       font-weight: bold;
+    }
+    .dark-mode {
+      background-color: #333;
+      color: white;
     }
   </style>
 </head>
@@ -65,106 +65,50 @@
   </header>
 
   <div class="container">
-    <!-- Button to launch WhatsApp Web -->
-    <button onclick="launchWhatsAppWeb()">Launch WhatsApp Web</button>
+    <!-- Toggle Dark Mode -->
+    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <br />
-    <br />
-    <!-- Input for phone number and message -->
-    <textarea id="phoneNumber" placeholder="Enter phone numbers (comma separated)"></textarea>
     <textarea id="message" placeholder="Type your message here..."></textarea>
     <br />
-    <!-- Button to send message -->
     <button onclick="sendMessage()">Send Message</button>
-    <br />
     <div class="status" id="status"></div>
   </div>
 
-  <!-- File Upload Section -->
-  <div class="file-upload">
-    <input type="file" id="fileInput" accept=".csv, .xlsx" />
-    <button onclick="uploadFile()">Upload Numbers from File</button>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <script>
-    // Function to launch WhatsApp Web
-    function launchWhatsAppWeb() {
-      window.open("https://web.whatsapp.com", "_blank");
+    // Toggle Dark Mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
     }
 
-    // Function to send messages to multiple numbers
+    // Function to send message
     function sendMessage() {
-      const phoneNumbers = document.getElementById("phoneNumber").value.split(',');
       const message = document.getElementById("message").value;
-      let count = 0;
-      
-      if (!phoneNumbers || !message) {
-        alert("Please provide both phone numbers and message!");
+      if (message === "") {
+        alert("Please type a message!");
         return;
       }
 
-      document.getElementById("status").innerText = "Sending messages...";
-      phoneNumbers.forEach((phoneNumber, index) => {
-        const cleanPhone = phoneNumber.trim();
-        if (validatePhoneNumber(cleanPhone)) {
-          const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
-          setTimeout(() => {
-            window.open(url, "_blank");
-            count++;
-            if (count === phoneNumbers.length) {
-              document.getElementById("status").innerText = "Messages sent successfully!";
-            }
-          }, index * 2000); // Send messages with a delay (2 seconds between each)
-        } else {
-          alert(`Invalid phone number: ${cleanPhone}`);
-        }
-      });
-    }
-
-    // Function to upload CSV/Excel and send messages
-    function uploadFile() {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
+      // Simulate sending the message
+      document.getElementById("status").innerText = "Sending message...";
       
-      if (!file) {
-        alert("Please upload a file first!");
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const fileContent = e.target.result;
-        const rows = fileContent.split('\n');
-        let count = 0;
-
-        rows.forEach(row => {
-          const columns = row.split(',');
-          const phoneNumber = columns[0].trim();
-          const message = columns[1] ? columns[1].trim() : "";
-
-          if (phoneNumber && message && validatePhoneNumber(phoneNumber)) {
-            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            setTimeout(() => {
-              window.open(url, "_blank");
-              count++;
-              if (count === rows.length) {
-                document.getElementById("status").innerText = "Messages sent successfully!";
-              }
-            }, count * 2000); // Delay between sending messages
-          } else {
-            alert(`Invalid entry in file: ${row}`);
-          }
-        });
-      };
-
-      reader.readAsText(file);
+      // Simulate WhatsApp Web API call for sending message
+      setTimeout(() => {
+        document.getElementById("status").innerText = "Message sent successfully!";
+      }, 2000);
     }
 
-    // Function to validate phone number
-    function validatePhoneNumber(phoneNumber) {
-      const regex = /^[0-9]{10,15}$/;  // Only numeric values with 10 to 15 digits
-      return regex.test(phoneNumber);
-    }
+    // Simulating Real-time Typing Indicators (you can integrate WebSockets for actual real-time)
+    let typingTimeout;
+    const messageInput = document.getElementById("message");
+
+    messageInput.addEventListener("input", () => {
+      clearTimeout(typingTimeout);
+      document.getElementById("status").innerText = "User is typing...";
+
+      typingTimeout = setTimeout(() => {
+        document.getElementById("status").innerText = "";
+      }, 3000);
+    });
   </script>
 </body>
 </html>
