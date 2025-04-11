@@ -3,69 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <title>Auto WhatsApp</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
   <style>
     body {
-      background-color: #121212;
-      color: #fff;
+      background-color: #111;
+      color: white;
       font-family: Arial, sans-serif;
-      padding: 20px;
       text-align: center;
+      padding: 20px;
     }
-    input, textarea, button {
+    h1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    h1 img {
+      width: 40px;
+      height: 40px;
+    }
+    textarea, input[type="file"], button {
       margin: 10px;
       padding: 10px;
+      width: 80%;
+      max-width: 500px;
       border: none;
       border-radius: 5px;
       font-size: 16px;
     }
-    input[type="file"], textarea {
-      width: 80%;
+    textarea {
+      height: 100px;
     }
     button {
       background-color: #25D366;
       color: white;
       cursor: pointer;
+      font-weight: bold;
     }
     button:hover {
       background-color: #128C7E;
+    }
+    .section {
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
-  <h1>Auto WhatsApp Sender</h1>
-  <p>Upload an Excel file containing WhatsApp numbers and write a custom message.</p>
+  <h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
+    Auto WhatsApp Sender
+  </h1>
 
-  <input type="file" id="excelFile" accept=".xlsx, .csv" /><br>
-  <textarea id="customMessage" rows="4" placeholder="Write your custom message here..."></textarea><br>
-  <button onclick="sendMessages()">Send Messages</button>
+  <div class="section">
+    <input type="file" id="excelFile" accept=".xlsx, .csv">
+    <p>or enter numbers manually (one per line):</p>
+    <textarea id="manualNumbers" placeholder="8801XXXXXXXXX"></textarea>
+  </div>
+
+  <div class="section">
+    <textarea id="customMessage" placeholder="Write your custom message here..."></textarea>
+  </div>
+
+  <div class="section">
+    <button onclick="sendMessages()">Send WhatsApp Messages</button>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
     function sendMessages() {
+      const manualInput = document.getElementById('manualNumbers').value.trim();
       const fileInput = document.getElementById('excelFile');
-      const message = document.getElementById('customMessage').value;
+      const message = document.getElementById('customMessage').value.trim();
 
-      if (!fileInput.files.length || !message) {
-        alert('Please upload an Excel file and enter your message.');
+      if (!message) {
+        alert("Please enter a custom message.");
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const numbers = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }).flat();
+      let numbers = [];
 
-        numbers.forEach(number => {
-          const cleanNumber = number.toString().replace(/\D/g, '');
-          const whatsappURL = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
-          window.open(whatsappURL, '_blank');
-        });
-      };
+      if (manualInput) {
+        numbers = manualInput.split(/\r?\n/).map(n => n.trim()).filter(n => n);
+      }
 
-      reader.readAsArrayBuffer(fileInput.files[0]);
+      if (fileInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const fileNumbers = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }).flat();
+          numbers = numbers.concat(fileNumbers.map(n => n.toString().trim()));
+          openWhatsAppTabs(numbers, message);
+        };
+        reader.readAsArrayBuffer(fileInput.files[0]);
+      } else {
+        openWhatsAppTabs(numbers, message);
+      }
+    }
+
+    function openWhatsAppTabs(numbers, message) {
+      if (numbers.length === 0) {
+        alert("Please enter or upload at least one number.");
+        return;
+      }
+
+      numbers.forEach((num, index) => {
+        setTimeout(() => {
+          const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
+          window.open(url, '_blank');
+        }, index * 2000); // 2 seconds delay between messages
+      });
     }
   </script>
 
