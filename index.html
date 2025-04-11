@@ -1,114 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Auto WhatsApp</title>
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #25D366;
-      padding: 20px;
-      text-align: center;
-      color: white;
-    }
-    button {
-      background-color: #25D366;
-      padding: 15px;
-      border: none;
-      color: white;
-      font-size: 16px;
-      width: 200px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-top: 20px;
-    }
-    button:hover {
-      background-color: #128C7E;
-    }
-    .container {
-      text-align: center;
-      margin-top: 30px;
-    }
-    input, textarea {
-      width: 80%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    textarea {
-      height: 150px;
-    }
-    .status {
-      margin-top: 20px;
-      color: green;
-      font-weight: bold;
-    }
-    .dark-mode {
-      background-color: #333;
-      color: white;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Auto WhatsApp Messenger</h1>
-  </header>
-
-  <div class="container">
-    <!-- Toggle Dark Mode -->
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-    <br />
-    <textarea id="message" placeholder="Type your message here..."></textarea>
-    <br />
-    <button onclick="sendMessage()">Send Message</button>
-    <div class="status" id="status"></div>
+  <div class="header">
+    <h1>Auto WhatsApp</h1>
+    <div class="icons">
+      <button>⚙️</button>
+      <button>❓</button>
+      <button>👤</button>
+    </div>
   </div>
 
-  <script>
-    // Toggle Dark Mode
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-    }
+  <div class="main">
+    <div class="controls">
+      <label>Custom Message:</label>
+      <textarea id="message"></textarea>
+      <input type="file" id="excelFile" accept=".xls,.xlsx" />
+      <input type="text" id="numberInput" placeholder="Type number & press Enter" />
+      <button onclick="startAuto()">Start</button>
+      <button onclick="stopAuto()">Stop</button>
+    </div>
 
-    // Function to send message
-    function sendMessage() {
-      const message = document.getElementById("message").value;
-      if (message === "") {
-        alert("Please type a message!");
-        return;
-      }
+    <div class="whatsapp-popup" id="waPopup">
+      <iframe src="https://web.whatsapp.com" id="waFrame"></iframe>
+    </div>
 
-      // Simulate sending the message
-      document.getElementById("status").innerText = "Sending message...";
-      
-      // Simulate WhatsApp Web API call for sending message
-      setTimeout(() => {
-        document.getElementById("status").innerText = "Message sent successfully!";
-      }, 2000);
-    }
+    <div class="status">
+      <h3>Status:</h3>
+      <div id="statusLogs">Waiting...</div>
+    </div>
+  </div>
 
-    // Simulating Real-time Typing Indicators (you can integrate WebSockets for actual real-time)
-    let typingTimeout;
-    const messageInput = document.getElementById("message");
-
-    messageInput.addEventListener("input", () => {
-      clearTimeout(typingTimeout);
-      document.getElementById("status").innerText = "User is typing...";
-
-      typingTimeout = setTimeout(() => {
-        document.getElementById("status").innerText = "";
-      }, 3000);
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
