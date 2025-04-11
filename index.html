@@ -1,76 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Auto WhatsApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
   <style>
     body {
-      background-color: #111;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b141a;
       color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
     }
-    h1 {
+    header {
+      background-color: #202c33;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+    }
+    header h1 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
       gap: 10px;
     }
-    h1 img {
-      width: 40px;
-      height: 40px;
+    header h1 img {
+      width: 30px;
+    }
+    .menu-icon {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .qr-box {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .qr-box img {
+      width: 200px;
+      margin-bottom: 10px;
+    }
+    .panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      background-color: #1e2a30;
+      padding: 20px;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 8px;
     }
     textarea, input[type="file"], button {
-      margin: 10px;
+      margin: 10px 0;
       padding: 10px;
-      width: 80%;
-      max-width: 500px;
+      width: 100%;
       border: none;
       border-radius: 5px;
       font-size: 16px;
     }
     textarea {
-      height: 100px;
+      height: 80px;
+      resize: none;
     }
     button {
       background-color: #25D366;
       color: white;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
     button:hover {
       background-color: #128C7E;
-    }
-    .section {
-      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
-  <h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Icon">
-    Auto WhatsApp Sender
-  </h1>
+  <header>
+    <h1><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> Auto WhatsApp</h1>
+    <div class="menu-icon" onclick="toggleMenu()">&#x22EE;</div>
+  </header>
 
-  <div class="section">
-    <input type="file" id="excelFile" accept=".xlsx, .csv">
-    <p>or enter numbers manually (one per line):</p>
-    <textarea id="manualNumbers" placeholder="8801XXXXXXXXX"></textarea>
-  </div>
+  <div class="container">
+    <div class="qr-box">
+      <img src="https://i.imgur.com/H7QvGfC.png" alt="QR Code" />
+      <p>Scan this QR to connect your WhatsApp</p>
+    </div>
 
-  <div class="section">
-    <textarea id="customMessage" placeholder="Write your custom message here..."></textarea>
-  </div>
-
-  <div class="section">
-    <button onclick="sendMessages()">Send WhatsApp Messages</button>
+    <div id="menuPanel" class="panel">
+      <input type="file" id="excelFile" accept=".xlsx, .csv" />
+      <textarea id="manualNumbers" placeholder="Enter numbers manually (one per line)"></textarea>
+      <textarea id="customMessage" placeholder="Type your custom message here..."></textarea>
+      <button onclick="sendMessages()">Send WhatsApp Messages</button>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
+    function toggleMenu() {
+      const panel = document.getElementById('menuPanel');
+      panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
     function sendMessages() {
       const manualInput = document.getElementById('manualNumbers').value.trim();
       const fileInput = document.getElementById('excelFile');
@@ -89,7 +128,7 @@
 
       if (fileInput.files.length > 0) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
           const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -113,7 +152,7 @@
         setTimeout(() => {
           const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
           window.open(url, '_blank');
-        }, index * 2000); // 2 seconds delay between messages
+        }, index * 2000); // 2s delay
       });
     }
   </script>
