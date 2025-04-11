@@ -2,193 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Auto WhatsApp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Auto WhatsApp</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0b141a;
-      color: white;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
+      padding: 0;
     }
-    .sidebar {
-      width: 260px;
-      background-color: #202c33;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      margin: 0;
-    }
-    .sidebar img {
-      width: 30px;
-    }
-    .sidebar .section {
-      margin-top: 30px;
-    }
-    .sidebar .section button {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      background-color: #111;
-      color: #25D366;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .main {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
-    .card {
-      background-color: #1e2a30;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .card h3 {
-      margin-top: 0;
-      color: #25D366;
-    }
-    textarea, input[type="file"] {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: #111;
-      color: white;
-    }
-    button.send {
+    header {
       background-color: #25D366;
-      padding: 12px;
-      width: 100%;
-      border: none;
-      font-weight: bold;
+      padding: 20px;
+      text-align: center;
       color: white;
-      border-radius: 5px;
-      cursor: pointer;
     }
-    button.send:hover {
+    button {
+      background-color: #25D366;
+      padding: 15px;
+      border: none;
+      color: white;
+      font-size: 16px;
+      width: 200px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    button:hover {
       background-color: #128C7E;
     }
-    .counter {
-      font-size: 14px;
-      color: #aaa;
+    .container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    input, textarea {
+      width: 80%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    textarea {
+      height: 150px;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Auto WhatsApp Messenger</h1>
+  </header>
 
-  <div class="sidebar">
-    <h2><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"> Auto WhatsApp</h2>
-    
-    <div class="section">
-      <button onclick="launchWeb()">Launch WhatsApp Web</button>
-      <button onclick="document.getElementById('excelFile').click()">Upload Excel</button>
-      <button onclick="scrollToPanel('manualInput')">Manual Number Input</button>
-      <button onclick="scrollToPanel('customMessage')">Write Custom Message</button>
-      <button onclick="sendMessages()">Send Messages</button>
-    </div>
+  <div class="container">
+    <!-- Button to launch WhatsApp Web -->
+    <button onclick="launchWhatsAppWeb()">Launch WhatsApp Web</button>
+    <br />
+    <br />
+    <!-- Input for phone number and message -->
+    <input type="text" id="phoneNumber" placeholder="Enter phone number (with country code)" />
+    <textarea id="message" placeholder="Type your message here..."></textarea>
+    <br />
+    <!-- Button to send message -->
+    <button onclick="sendMessage()">Send Message</button>
   </div>
 
-  <div class="main">
-    <div class="card">
-      <h3>Upload Excel File</h3>
-      <input type="file" id="excelFile" accept=".xlsx, .csv" />
-    </div>
-
-    <div class="card" id="manualInput">
-      <h3>Enter Numbers Manually</h3>
-      <textarea id="manualNumbers" placeholder="One number per line..."></textarea>
-    </div>
-
-    <div class="card" id="customMessage">
-      <h3>Custom Message</h3>
-      <textarea id="customMessageInput" placeholder="Write your message here..."></textarea>
-    </div>
-
-    <div class="card">
-      <h3>Status</h3>
-      <div class="counter" id="statusCounter">No numbers yet.</div>
-    </div>
-
-    <div class="card">
-      <button class="send" onclick="sendMessages()">Send WhatsApp Messages</button>
-    </div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script>
-    function launchWeb() {
+    // Function to launch WhatsApp Web
+    function launchWhatsAppWeb() {
       window.open("https://web.whatsapp.com", "_blank");
     }
 
-    function scrollToPanel(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function sendMessages() {
-      const manualInput = document.getElementById('manualNumbers').value.trim();
-      const fileInput = document.getElementById('excelFile');
-      const message = document.getElementById('customMessageInput').value.trim();
-      const status = document.getElementById('statusCounter');
-
-      if (!message) {
-        alert("Please enter a message.");
+    // Function to send message
+    function sendMessage() {
+      const phoneNumber = document.getElementById("phoneNumber").value;
+      const message = document.getElementById("message").value;
+      
+      if (!phoneNumber || !message) {
+        alert("Please provide both phone number and message!");
         return;
       }
 
-      let numbers = [];
-
-      if (manualInput) {
-        numbers = manualInput.split(/\r?\n/).map(n => n.trim()).filter(n => n);
-      }
-
-      if (fileInput.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const fileNumbers = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }).flat();
-          numbers = numbers.concat(fileNumbers.map(n => n.toString().trim()));
-          processNumbers(numbers, message, status);
-        };
-        reader.readAsArrayBuffer(fileInput.files[0]);
-      } else {
-        processNumbers(numbers, message, status);
-      }
-    }
-
-    function processNumbers(numbers, message, statusEl) {
-      numbers = [...new Set(numbers)].filter(n => n.length > 5);
-      if (numbers.length === 0) {
-        alert("No valid numbers found.");
-        return;
-      }
-
-      statusEl.textContent = `Sending to ${numbers.length} numbers...`;
-
-      numbers.forEach((num, i) => {
-        setTimeout(() => {
-          const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
-          window.open(url, '_blank');
-        }, i * 2500); // delay 2.5 sec per number
-      });
+      // Construct the WhatsApp link
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      
+      // Open WhatsApp link in a new tab
+      window.open(url, "_blank");
     }
   </script>
 </body>
