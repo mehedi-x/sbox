@@ -1,22 +1,110 @@
-.settings-popup {
-  background: #1a1a1a;
-  padding: 15px;
-  border-radius: 5px;
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  width: 250px;
-  z-index: 999;
-  border: 1px solid #333;
-  color: #fff;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto WhatsApp - PRO</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background: #000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .icons span {
+      margin-left: 15px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+    .settings-popup {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 5px;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      width: 250px;
+      z-index: 999;
+      border: 1px solid #333;
+      color: #fff;
+    }
+    .settings-popup label {
+      display: block;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Auto WhatsApp</h1>
+    <div class="icons">
+      <span title="Settings">&#9881;</span>
+    </div>
+  </div>
 
-.settings-popup label {
-  display: block;
-  margin: 10px 0;
-  font-size: 14px;
-}
+  <!-- WhatsApp Web Iframe -->
+  <iframe src="https://web.whatsapp.com" id="waIframe"></iframe>
 
-.hidden {
-  display: none;
-}
+  <!-- Settings Panel -->
+  <div class="settings-popup hidden" id="settingsPanel">
+    <h3>Settings</h3>
+    <label>Delay (seconds): <input type="number" id="delay" value="20"></label>
+    <label>Retry Limit: <input type="number" id="retry" value="3"></label>
+    <label><input type="checkbox" id="previewToggle" checked> Enable Message Preview</label>
+    <label><input type="checkbox" id="autocloseToggle" checked> Auto-close tab after send</label>
+    <button onclick="saveSettings()">Save</button>
+  </div>
+
+  <script>
+    let delay = 20000;
+    let retryLimit = 3;
+    let autoCloseTab = true;
+
+    document.querySelector(".icons span[title='Settings']").onclick = () => {
+      document.getElementById("settingsPanel").classList.toggle("hidden");
+    };
+
+    function saveSettings() {
+      delay = parseInt(document.getElementById("delay").value) * 1000;
+      retryLimit = parseInt(document.getElementById("retry").value);
+      autoCloseTab = document.getElementById("autocloseToggle").checked;
+      localStorage.setItem("whatsappSettings", JSON.stringify({ delay, retryLimit, autoCloseTab }));
+      document.getElementById("settingsPanel").classList.add("hidden");
+      alert("Settings saved!");
+    }
+
+    window.onload = () => {
+      const saved = JSON.parse(localStorage.getItem("whatsappSettings"));
+      if (saved) {
+        delay = saved.delay;
+        retryLimit = saved.retryLimit;
+        autoCloseTab = saved.autoCloseTab;
+        document.getElementById("delay").value = delay / 1000;
+        document.getElementById("retry").value = retryLimit;
+        document.getElementById("autocloseToggle").checked = autoCloseTab;
+      }
+    };
+  </script>
+</body>
+</html>
