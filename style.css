@@ -1,80 +1,44 @@
-* {
+body {
+  background-color: #121212;
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: white;
-}
-
-.container {
-  width: 80%;
-  margin: auto;
   text-align: center;
 }
 
-.header {
-  margin: 20px 0;
+.container {
+  padding: 20px;
 }
 
-h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
+input, button, textarea {
+  margin: 10px 0;
+  padding: 10px;
+  width: 90%;
+  max-width: 400px;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 5px;
 }
 
 button {
-  background-color: #25D366;
-  color: white;
+  background-color: #00c853;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 button:hover {
-  background-color: #128C7E;
+  background-color: #00e676;
 }
 
-.message-box, .upload-section, .status-panel {
+canvas {
   margin-top: 20px;
 }
 
-textarea {
-  width: 80%;
-  height: 150px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #333;
-  background-color: #1b1b1b;
-  color: white;
-}
-
-.upload-section input {
-  margin: 10px 0;
-}
-
-.status-panel {
-  background-color: #2f2f2f;
-  padding: 10px;
-}
-
-.status-panel h3 {
-  font-size: 18px;
-}
-
-.whatsapp-web {
-  margin-top: 20px;
-  background-color: #2f2f2f;
-  padding: 20px;
-  display: none;
-}
-
-#qrCodeContainer {
-  margin-top: 10px;
-  padding: 10px;
-  border: 2px dashed #25D366;
+footer {
+  margin-top: 50px;
+  font-size: 14px;
+  opacity: 0.7;
 }
