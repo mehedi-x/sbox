@@ -2,27 +2,34 @@ let localConnection;
 let sendChannel;
 let receiveBuffer = [];
 let receivedSize = 0;
-
-const fileInput = document.getElementById('fileInput');
-const startSend = document.getElementById('startSend');
-const qrCanvas = document.getElementById('qrCanvas');
-const downloadLink = document.getElementById('downloadLink');
-const hotspotStatus = document.getElementById('hotspotStatus');
-
 const HOTSPOT_KEY = "hotspot_offer";
 
-// Sender side
-startSend.onclick = async () => {
-  const file = fileInput.files[0];
-  if (!file) return alert('Please select a file.');
+// Sender Section
+const dropArea = document.getElementById('drop-area');
+const fileInput = document.getElementById('fileInput');
+const qrCanvas = document.getElementById('qrCanvas');
+const statusMessage = document.getElementById('status');
 
+// For Drag and Drop
+dropArea.addEventListener('dragover', (e) => e.preventDefault());
+dropArea.addEventListener('drop', (e) => handleDrop(e));
+
+function handleDrop(event) {
+  event.preventDefault();
+  const file = event.dataTransfer.files[0];
+  if (file) {
+    sendFile(file);
+  }
+}
+
+function sendFile(file) {
+  statusMessage.innerText = 'Preparing to send...';
   localConnection = new RTCPeerConnection();
   sendChannel = localConnection.createDataChannel("file");
 
   sendChannel.onopen = () => {
     const chunkSize = 16384;
     let offset = 0;
-
     const readSlice = o => {
       const reader = new FileReader();
       reader.onload = e => {
@@ -40,20 +47,20 @@ startSend.onclick = async () => {
     readSlice(0);
   };
 
-  const offer = await localConnection.createOffer();
-  await localConnection.setLocalDescription(offer);
+  localConnection.createOffer().then(offer => {
+    localConnection.setLocalDescription(offer);
+    localConnection.onicecandidate = e => {
+      if (e.candidate === null) {
+        const sdp = JSON.stringify(localConnection.localDescription);
+        localStorage.setItem(HOTSPOT_KEY, sdp);
+        statusMessage.innerText = 'Hotspot connected! Waiting for receiver...';
+        generateQR(sdp);
+      }
+    };
+  });
+}
 
-  localConnection.onicecandidate = e => {
-    if (e.candidate === null) {
-      const sdp = JSON.stringify(localConnection.localDescription);
-      localStorage.setItem(HOTSPOT_KEY, sdp);
-      hotspotStatus.innerText = "Hotspot mode active. Waiting for receiver...";
-      generateQR(sdp);
-    }
-  };
-};
-
-// Receiver side (auto connect)
+// Receiver Section - Auto Connect
 window.onload = async () => {
   const sdp = localStorage.getItem(HOTSPOT_KEY);
   if (!sdp) return;
@@ -69,7 +76,7 @@ window.onload = async () => {
       if (e.data === "EOF") {
         const receivedBlob = new Blob(receiveBuffer);
         const downloadUrl = URL.createObjectURL(receivedBlob);
-        downloadLink.innerHTML = `<a href="${downloadUrl}" download="received_file">Download File</a>`;
+        document.getElementById('downloadLink').innerHTML = `<a href="${downloadUrl}" download="received_file">Download File</a>`;
         receiveBuffer = [];
         return;
       }
@@ -84,13 +91,12 @@ window.onload = async () => {
 
   localConnection.onicecandidate = e => {
     if (e.candidate === null) {
-      // Receiver answer shown if needed manually
       console.log("Receiver SDP ready:", JSON.stringify(localConnection.localDescription));
     }
   };
 };
 
-// Generate QR (optional)
+// Generate QR for Sender's Offer
 function generateQR(text) {
   new QRious({
     element: qrCanvas,
