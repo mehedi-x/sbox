@@ -8,27 +8,21 @@ const startSend = document.getElementById('startSend');
 const qrCanvas = document.getElementById('qrCanvas');
 const remoteOffer = document.getElementById('remoteOffer');
 const connectBtn = document.getElementById('connectBtn');
+const autoConnect = document.getElementById('autoConnect');
 const downloadLink = document.getElementById('downloadLink');
+const hotspotCodeDisplay = document.getElementById('hotspotCodeDisplay');
 
-// Create QR from offer
-function generateQR(text) {
-  const qr = new QRious({
-    element: qrCanvas,
-    value: text,
-    size: 250
-  });
-}
+const HOTSPOT_KEY = "hotspot_offer";
 
 // Sender
 startSend.onclick = async () => {
   const file = fileInput.files[0];
-  if (!file) return alert('Select a file first!');
+  if (!file) return alert('Please select a file.');
 
   localConnection = new RTCPeerConnection();
-  sendChannel = localConnection.createDataChannel('file');
+  sendChannel = localConnection.createDataChannel("file");
 
   sendChannel.onopen = () => {
-    console.log('Data channel open, sending file...');
     const chunkSize = 16384;
     let offset = 0;
 
@@ -40,10 +34,10 @@ startSend.onclick = async () => {
         if (offset < file.size) {
           readSlice(offset);
         } else {
-          sendChannel.send('EOF');
+          sendChannel.send("EOF");
         }
       };
-      const slice = file.slice(offset, o + chunkSize);
+      const slice = file.slice(offset, offset + chunkSize);
       reader.readAsArrayBuffer(slice);
     };
     readSlice(0);
@@ -54,25 +48,39 @@ startSend.onclick = async () => {
 
   localConnection.onicecandidate = e => {
     if (e.candidate === null) {
-      generateQR(JSON.stringify(localConnection.localDescription));
+      const sdp = JSON.stringify(localConnection.localDescription);
+      const code = Math.floor(1000 + Math.random() * 9000);
+      localStorage.setItem(HOTSPOT_KEY, sdp);
+      hotspotCodeDisplay.textContent = `Hotspot Code: ${code}`;
+      generateQR(sdp);
     }
   };
 };
 
 // Receiver
+autoConnect.onclick = () => {
+  const offer = localStorage.getItem(HOTSPOT_KEY);
+  if (!offer) {
+    alert("No sender offer found on this network.");
+    return;
+  }
+  remoteOffer.value = offer;
+  connectBtn.click();
+};
+
 connectBtn.onclick = async () => {
   const sdp = remoteOffer.value;
-  if (!sdp) return alert('Paste sender\'s SDP offer!');
+  if (!sdp) return alert('Paste the sender offer or use Hotspot Connect');
 
   const remoteDesc = new RTCSessionDescription(JSON.parse(sdp));
   localConnection = new RTCPeerConnection();
 
   localConnection.ondatachannel = event => {
     const receiveChannel = event.channel;
-    receiveChannel.binaryType = 'arraybuffer';
+    receiveChannel.binaryType = "arraybuffer";
 
     receiveChannel.onmessage = e => {
-      if (e.data === 'EOF') {
+      if (e.data === "EOF") {
         const receivedBlob = new Blob(receiveBuffer);
         const downloadUrl = URL.createObjectURL(receivedBlob);
         downloadLink.innerHTML = `<a href="${downloadUrl}" download="received_file">Download File</a>`;
@@ -95,7 +103,10 @@ connectBtn.onclick = async () => {
   };
 };
 
-// QR generator library (QRious)
-const script = document.createElement("script");
-script.src = "https://cdn.jsdelivr.net/npm/qrious";
-document.body.appendChild(script);
+function generateQR(text) {
+  new QRious({
+    element: qrCanvas,
+    value: text,
+    size: 250
+  });
+}
