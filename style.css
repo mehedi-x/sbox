@@ -1,32 +1,31 @@
 body {
-  background-color: #121212;
-  color: #ffffff;
+  background-color: #111;
+  color: #eee;
   font-family: 'Segoe UI', sans-serif;
+  text-align: center;
   margin: 0;
   padding: 0;
-  text-align: center;
 }
 
 .container {
   padding: 20px;
 }
 
-input, button, textarea {
-  margin: 10px 0;
+input, button {
   padding: 10px;
+  margin: 10px 0;
   width: 90%;
   max-width: 400px;
-  background: #1e1e1e;
-  border: 1px solid #333;
-  color: white;
+  border: none;
   border-radius: 5px;
+  background: #222;
+  color: white;
 }
 
 button {
   background-color: #00c853;
-  border: none;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
 }
 
 button:hover {
@@ -34,11 +33,17 @@ button:hover {
 }
 
 canvas {
-  margin-top: 20px;
+  margin-top: 10px;
+}
+
+#hotspotCodeDisplay {
+  font-size: 16px;
+  color: #66ff99;
+  margin: 10px 0;
 }
 
 footer {
-  margin-top: 50px;
-  font-size: 14px;
-  opacity: 0.7;
+  margin-top: 40px;
+  font-size: 12px;
+  opacity: 0.5;
 }
