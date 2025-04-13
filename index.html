@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quick Share - P2P File Transfer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quick Share (Hotspot Mode)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,24 +11,27 @@
     <h1>Quick Share</h1>
 
     <div id="sendSection">
-      <h2>Send File</h2>
+      <h2>Send File (Hotspot Mode)</h2>
       <input type="file" id="fileInput" />
       <button id="startSend">Start Sharing</button>
+      <p id="hotspotCodeDisplay"></p>
       <canvas id="qrCanvas"></canvas>
     </div>
 
     <div id="receiveSection">
       <h2>Receive File</h2>
-      <input type="text" id="remoteOffer" placeholder="Paste Offer SDP here" />
+      <button id="autoConnect">Try Hotspot Connect</button>
+      <input type="text" id="remoteOffer" placeholder="Or paste offer SDP here" />
       <button id="connectBtn">Connect & Receive</button>
       <div id="downloadLink"></div>
     </div>
 
     <footer>
-      <p>Made for GitHub Pages | WebRTC Powered</p>
+      <p>GitHub Pages Hotspot P2P Share</p>
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrious"></script>
   <script src="script.js"></script>
 </body>
 </html>
