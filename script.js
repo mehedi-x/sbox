@@ -6,15 +6,12 @@ let receivedSize = 0;
 const fileInput = document.getElementById('fileInput');
 const startSend = document.getElementById('startSend');
 const qrCanvas = document.getElementById('qrCanvas');
-const remoteOffer = document.getElementById('remoteOffer');
-const connectBtn = document.getElementById('connectBtn');
-const autoConnect = document.getElementById('autoConnect');
 const downloadLink = document.getElementById('downloadLink');
-const hotspotCodeDisplay = document.getElementById('hotspotCodeDisplay');
+const hotspotStatus = document.getElementById('hotspotStatus');
 
 const HOTSPOT_KEY = "hotspot_offer";
 
-// Sender
+// Sender side
 startSend.onclick = async () => {
   const file = fileInput.files[0];
   if (!file) return alert('Please select a file.');
@@ -49,28 +46,17 @@ startSend.onclick = async () => {
   localConnection.onicecandidate = e => {
     if (e.candidate === null) {
       const sdp = JSON.stringify(localConnection.localDescription);
-      const code = Math.floor(1000 + Math.random() * 9000);
       localStorage.setItem(HOTSPOT_KEY, sdp);
-      hotspotCodeDisplay.textContent = `Hotspot Code: ${code}`;
+      hotspotStatus.innerText = "Hotspot mode active. Waiting for receiver...";
       generateQR(sdp);
     }
   };
 };
 
-// Receiver
-autoConnect.onclick = () => {
-  const offer = localStorage.getItem(HOTSPOT_KEY);
-  if (!offer) {
-    alert("No sender offer found on this network.");
-    return;
-  }
-  remoteOffer.value = offer;
-  connectBtn.click();
-};
-
-connectBtn.onclick = async () => {
-  const sdp = remoteOffer.value;
-  if (!sdp) return alert('Paste the sender offer or use Hotspot Connect');
+// Receiver side (auto connect)
+window.onload = async () => {
+  const sdp = localStorage.getItem(HOTSPOT_KEY);
+  if (!sdp) return;
 
   const remoteDesc = new RTCSessionDescription(JSON.parse(sdp));
   localConnection = new RTCPeerConnection();
@@ -98,23 +84,17 @@ connectBtn.onclick = async () => {
 
   localConnection.onicecandidate = e => {
     if (e.candidate === null) {
-      prompt("Send this SDP back to sender:", JSON.stringify(localConnection.localDescription));
+      // Receiver answer shown if needed manually
+      console.log("Receiver SDP ready:", JSON.stringify(localConnection.localDescription));
     }
   };
 };
 
+// Generate QR (optional)
 function generateQR(text) {
   new QRious({
     element: qrCanvas,
     value: text,
-    size: 250
+    size: 200
   });
 }
-// Add in script.js
-window.onload = () => {
-  const autoOffer = localStorage.getItem("hotspot_offer");
-  if (autoOffer && remoteOffer) {
-    remoteOffer.value = autoOffer;
-    connectBtn.click();
-  }
-};
