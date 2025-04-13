@@ -110,3 +110,11 @@ function generateQR(text) {
     size: 250
   });
 }
+// Add in script.js
+window.onload = () => {
+  const autoOffer = localStorage.getItem("hotspot_offer");
+  if (autoOffer && remoteOffer) {
+    remoteOffer.value = autoOffer;
+    connectBtn.click();
+  }
+};
