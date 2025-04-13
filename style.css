@@ -13,37 +13,53 @@ body {
   margin: auto;
 }
 
-input, button {
-  width: 90%;
-  padding: 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 6px;
-  background: #222;
-  color: white;
-  font-size: 16px;
+h1 {
+  font-size: 24px;
+  color: #00e676;
+}
+
+h2 {
+  color: #00e676;
+}
+
+.drop-area {
+  border: 2px dashed #00e676;
+  padding: 50px;
+  margin-top: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.drop-area:hover {
+  background-color: #222;
+}
+
+#fileInput {
+  display: none;
 }
 
 button {
   background-color: #00c853;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: white;
+  border: none;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: #00e676;
-}
-
-hr {
-  margin: 30px 0;
-  border-color: #444;
-}
-
-canvas {
-  margin-top: 10px;
 }
 
 #downloadLink a {
   color: #00e676;
   font-size: 18px;
   text-decoration: underline;
+}
+
+canvas {
+  margin-top: 20px;
+}
+
+hr {
+  margin: 30px 0;
+  border-color: #444;
 }
