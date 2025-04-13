@@ -3,26 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quick Share (Hotspot Auto Connect)</title>
+  <title>Quick Share (Auto Connect)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <h1>Quick Share</h1>
 
+    <!-- Sender Section -->
     <div id="sendSection">
-      <h2>Send File</h2>
-      <input type="file" id="fileInput" />
-      <button id="startSend">Start Sharing</button>
-      <p id="hotspotStatus"></p>
+      <h2>Share File</h2>
+      <div id="drop-area" class="drop-area">
+        <p>Drag and Drop your file here</p>
+        <input type="file" id="fileInput" style="display:none"/>
+      </div>
+      <p id="status"></p>
       <canvas id="qrCanvas"></canvas>
     </div>
 
     <hr />
 
+    <!-- Receiver Section -->
     <div id="receiveSection">
       <h2>Receive File</h2>
-      <p>If you're connected to the same hotspot, this page will auto-detect and receive the file.</p>
+      <p>If you're connected to the same hotspot, this page will automatically receive the file.</p>
       <div id="downloadLink"></div>
     </div>
   </div>
