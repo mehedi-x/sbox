@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quick Share (Hotspot Mode)</title>
+  <title>Quick Share (Hotspot Auto Connect)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,28 +11,23 @@
     <h1>Quick Share</h1>
 
     <div id="sendSection">
-      <h2>Send File (Hotspot Mode)</h2>
+      <h2>Send File</h2>
       <input type="file" id="fileInput" />
       <button id="startSend">Start Sharing</button>
-      <p id="hotspotCodeDisplay"></p>
+      <p id="hotspotStatus"></p>
       <canvas id="qrCanvas"></canvas>
     </div>
 
+    <hr />
+
     <div id="receiveSection">
       <h2>Receive File</h2>
-      <button id="autoConnect">Try Hotspot Connect</button>
-      <input type="text" id="remoteOffer" placeholder="Or paste offer SDP here" />
-      <button id="connectBtn">Connect & Receive</button>
+      <p>If you're connected to the same hotspot, this page will auto-detect and receive the file.</p>
       <div id="downloadLink"></div>
     </div>
-
-    <footer>
-      <p>GitHub Pages Hotspot P2P Share</p>
-    </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrious"></script>
   <script src="script.js"></script>
 </body>
 </html>
-<p style="color: #999;">If you're connected to the same hotspot, this page will auto-detect available transfers.</p>
