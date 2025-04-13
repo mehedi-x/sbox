@@ -1,30 +1,31 @@
 body {
-  background-color: #111;
-  color: #eee;
+  background-color: #0d0d0d;
+  color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
-  text-align: center;
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 
 .container {
   padding: 20px;
+  max-width: 500px;
+  margin: auto;
 }
 
 input, button {
-  padding: 10px;
-  margin: 10px 0;
   width: 90%;
-  max-width: 400px;
+  padding: 12px;
+  margin-top: 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   background: #222;
   color: white;
+  font-size: 16px;
 }
 
 button {
   background-color: #00c853;
-  font-weight: bold;
   cursor: pointer;
 }
 
@@ -32,18 +33,17 @@ button:hover {
   background-color: #00e676;
 }
 
+hr {
+  margin: 30px 0;
+  border-color: #444;
+}
+
 canvas {
   margin-top: 10px;
 }
 
-#hotspotCodeDisplay {
-  font-size: 16px;
-  color: #66ff99;
-  margin: 10px 0;
-}
-
-footer {
-  margin-top: 40px;
-  font-size: 12px;
-  opacity: 0.5;
+#downloadLink a {
+  color: #00e676;
+  font-size: 18px;
+  text-decoration: underline;
 }
