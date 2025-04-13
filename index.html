@@ -1,40 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auto WhatsApp</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Share - P2P File Transfer</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Auto WhatsApp Sender</h1>
-      <button class="whatsapp-login-btn" onclick="loginToWhatsApp()">Login with WhatsApp</button>
+    <h1>Quick Share</h1>
+
+    <div id="sendSection">
+      <h2>Send File</h2>
+      <input type="file" id="fileInput" />
+      <button id="startSend">Start Sharing</button>
+      <canvas id="qrCanvas"></canvas>
     </div>
-    
-    <div class="message-box">
-      <h3>Custom Message</h3>
-      <textarea id="messageInput" placeholder="Enter your message here..."></textarea>
-      <button class="send-message-btn" onclick="sendMessage()">Send Message</button>
+
+    <div id="receiveSection">
+      <h2>Receive File</h2>
+      <input type="text" id="remoteOffer" placeholder="Paste Offer SDP here" />
+      <button id="connectBtn">Connect & Receive</button>
+      <div id="downloadLink"></div>
     </div>
-    
-    <div class="upload-section">
-      <input type="file" id="fileUpload" accept=".csv, .xlsx" onchange="uploadFile()">
-      <button onclick="downloadNumbers()">Download Numbers</button>
-    </div>
-    
-    <div class="status-panel">
-      <h3>Live Status</h3>
-      <div id="statusOutput">No data available</div>
-    </div>
-    
-    <div id="whatsappWeb" class="whatsapp-web">
-      <h3>WhatsApp Web</h3>
-      <div id="qrCodeContainer"></div>
-    </div>
+
+    <footer>
+      <p>Made for GitHub Pages | WebRTC Powered</p>
+    </footer>
   </div>
-  
+
   <script src="script.js"></script>
 </body>
 </html>
